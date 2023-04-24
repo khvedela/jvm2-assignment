@@ -1,5 +1,6 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.io.PrintWriter" %>
 <%
   String title = request.getParameter("title");
   String content = request.getParameter("content");
@@ -18,18 +19,19 @@
     try {
       Class.forName("com.mysql.jdbc.Driver");
       Connection conn = DriverManager.getConnection("jdbc:mysql://0.0.0.0:62261/blog?autoReconnect=true&useSSL=false", "root", "123");
-      String query = "INSERT INTO posts (title, content, author, date) VALUES (?, ?, ?, '12-03-23')";
+      String query = "INSERT INTO posts (title, content, author, date) VALUES (?, ?, ?, ?)";
       PreparedStatement pst = conn.prepareStatement(query);
       pst.setString(1, title);
       pst.setString(2, content);
       pst.setString(3, author);
+      pst.setTimestamp(4, timestamp);
       pst.executeUpdate();
       pst.close();
       conn.close();
       String redirectURL = "http://localhost:8080/assignment-1.0-SNAPSHOT/posts";
       response.sendRedirect(redirectURL);
     } catch (Exception e) {
-      e.printStackTrace();
+      out.println(e);
     }
   }
 %>
